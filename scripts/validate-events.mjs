@@ -7,6 +7,9 @@ import { dirname, join } from "node:path";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const dataPath = join(__dirname, "..", "data", "events.json");
+const regionsPath = join(__dirname, "..", "data", "regions.json");
+
+const VALID_REGIONS = new Set(JSON.parse(readFileSync(regionsPath, "utf8")));
 
 const REQUIRED_FIELDS = [
   "id",
@@ -118,11 +121,12 @@ events.forEach((e, i) => {
     }
   }
 
-  // region drives a filter <select> — a long comma-separated list of counties (e.g. for a
-  // multi-stage tour) blows out its rendered width and breaks mobile layout (overflow-x).
-  // Keep it to a single short label like "Više županija" instead of listing every county.
-  if (typeof e.region === "string" && e.region.length > 30) {
-    errors.push(`${tag}: region "${e.region}" is too long (${e.region.length} chars, max 30) — use a short single label like "Više županija" for multi-region events instead of listing every county`);
+  // region drives a filter <select> — an arbitrary comma-separated list of counties (e.g. for
+  // a multi-stage tour) blows out its rendered width and breaks mobile layout (overflow-x).
+  // Must be one of the canonical county labels in data/regions.json (includes "Više županija"
+  // for events that genuinely span multiple counties).
+  if (typeof e.region === "string" && !VALID_REGIONS.has(e.region)) {
+    errors.push(`${tag}: region "${e.region}" is not one of the canonical regions in data/regions.json (use "Više županija" for multi-region events)`);
   }
 });
 

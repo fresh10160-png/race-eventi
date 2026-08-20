@@ -11,9 +11,17 @@ export default function SiteHeader() {
             RACE <span className="text-(--red)">EVENTI</span>
           </span>
         </Link>
-        <p className="text-xs font-semibold uppercase tracking-widest text-(--text-mute) hidden sm:block">
-          Motosport &amp; Biciklizam u Hrvatskoj
-        </p>
+        <div className="flex items-center gap-4">
+          <p className="text-xs font-semibold uppercase tracking-widest text-(--text-mute) hidden sm:block">
+            Motosport &amp; Biciklizam u Hrvatskoj
+          </p>
+          <Link
+            href="/prijavi"
+            className="rounded-sm bg-(--red) px-3.5 py-2 text-xs font-extrabold uppercase tracking-wide text-white hover:opacity-90"
+          >
+            Prijavi utrku
+          </Link>
+        </div>
       </div>
     </header>
   );
