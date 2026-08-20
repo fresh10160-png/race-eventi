@@ -80,7 +80,11 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
           onChange={(e) => setQuery(e.target.value)}
           className={`${fieldClass} w-full sm:w-64 placeholder:text-(--text-mute) placeholder:font-normal`}
         />
-        <select value={region} onChange={(e) => setRegion(e.target.value)} className={fieldClass}>
+        <select
+          value={region}
+          onChange={(e) => setRegion(e.target.value)}
+          className={`${fieldClass} max-w-[46%] sm:max-w-56 truncate`}
+        >
           <option value="all">Sve regije</option>
           {regions.map((r) => (
             <option key={r} value={r}>
@@ -88,7 +92,11 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
             </option>
           ))}
         </select>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className={fieldClass}>
+        <select
+          value={category}
+          onChange={(e) => setCategory(e.target.value)}
+          className={`${fieldClass} max-w-[46%] sm:max-w-48 truncate`}
+        >
           <option value="all">Sve kategorije</option>
           {categories.map((c) => (
             <option key={c} value={c}>
@@ -96,7 +104,7 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
             </option>
           ))}
         </select>
-        <select value={month} onChange={(e) => setMonth(e.target.value)} className={fieldClass}>
+        <select value={month} onChange={(e) => setMonth(e.target.value)} className={`${fieldClass} max-w-[46%] sm:max-w-40 truncate`}>
           <option value="all">Svi mjeseci</option>
           {CROATIAN_MONTHS.map((m, i) => (
             <option key={m} value={i}>

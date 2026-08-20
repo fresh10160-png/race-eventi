@@ -117,6 +117,13 @@ events.forEach((e, i) => {
       errors.push(`${tag}: ${strField} is empty`);
     }
   }
+
+  // region drives a filter <select> — a long comma-separated list of counties (e.g. for a
+  // multi-stage tour) blows out its rendered width and breaks mobile layout (overflow-x).
+  // Keep it to a single short label like "Više županija" instead of listing every county.
+  if (typeof e.region === "string" && e.region.length > 30) {
+    errors.push(`${tag}: region "${e.region}" is too long (${e.region.length} chars, max 30) — use a short single label like "Više županija" for multi-region events instead of listing every county`);
+  }
 });
 
 if (errors.length > 0) {
