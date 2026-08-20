@@ -2,11 +2,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import ChequeredMark from "@/components/ChequeredMark";
 import { events, formatDateRange } from "@/lib/events";
 
 const disciplineLabel = {
   motorsport: "Motosport",
   cycling: "Biciklizam",
+} as const;
+
+const disciplineColor = {
+  motorsport: "var(--red)",
+  cycling: "var(--blue)",
 } as const;
 
 export function generateStaticParams() {
@@ -27,51 +33,76 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
   const { id } = await params;
   const event = events.find((e) => e.id === id);
   if (!event) notFound();
+  const accent = disciplineColor[event.discipline];
 
   return (
     <>
       <SiteHeader />
-      <main className="flex-1 mx-auto w-full max-w-3xl px-4 sm:px-6 py-8">
-        <Link href="/" className="text-sm text-black/50 dark:text-white/50 hover:underline">
+      <main className="flex-1 mx-auto w-full max-w-4xl px-4 sm:px-6 py-6">
+        <Link href="/" className="text-sm font-semibold text-(--text-mute) hover:text-(--foreground)">
           ← Natrag na sve utrke
         </Link>
 
-        <div className="mt-4 flex flex-wrap items-center gap-2">
-          <span className="inline-flex items-center rounded-full bg-black/5 dark:bg-white/10 px-2.5 py-1 text-xs font-medium">
-            {disciplineLabel[event.discipline]}
-          </span>
-          <span className="inline-flex items-center rounded-full bg-black/5 dark:bg-white/10 px-2.5 py-1 text-xs font-medium">
-            {event.category}
-          </span>
-          {event.status === "tentative" && (
-            <span className="inline-flex items-center rounded-full bg-amber-50 dark:bg-amber-950/40 px-2.5 py-1 text-xs font-medium text-amber-700 dark:text-amber-300 ring-1 ring-inset ring-amber-600/20">
-              okvirni datum — provjerite kod organizatora
+        <section
+          className="relative overflow-hidden rounded-md border border-(--border) mt-4 px-6 sm:px-10 py-10 sm:py-12"
+          style={{ background: "linear-gradient(120deg, var(--bg-elevated) 0%, var(--background) 65%)" }}
+        >
+          <div
+            className="pointer-events-none absolute -top-3/5 -right-[6%] w-[460px] h-[260%] opacity-[0.16] -skew-x-8"
+            style={{
+              background:
+                "repeating-linear-gradient(16deg, var(--red) 0px, var(--red) 40px, transparent 40px, transparent 80px)",
+            }}
+          />
+          <ChequeredMark size={40} className="absolute top-7 right-7 sm:right-9" />
+
+          <div className="relative flex flex-wrap items-center gap-2 mb-4">
+            <span
+              style={{ background: accent }}
+              className="inline-flex items-center rounded-sm px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-white"
+            >
+              {disciplineLabel[event.discipline]}
             </span>
-          )}
-        </div>
+            <span className="inline-flex items-center rounded-sm border border-(--border) px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-(--text-dim)">
+              {event.category}
+            </span>
+            {event.status === "tentative" && (
+              <span className="inline-flex items-center rounded-sm bg-(--amber) px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-wide text-black/80">
+                okvirni datum — provjerite kod organizatora
+              </span>
+            )}
+          </div>
 
-        <h1 className="mt-3 text-2xl sm:text-3xl font-bold tracking-tight">{event.name}</h1>
+          <h1 className="relative font-display text-4xl sm:text-5xl leading-[0.98] uppercase max-w-2xl">
+            {event.name}
+          </h1>
+        </section>
 
-        <dl className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
+        <dl className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
           <div>
-            <dt className="text-black/50 dark:text-white/50">Datum</dt>
-            <dd className="font-medium">{formatDateRange(event.date_start, event.date_end)}</dd>
+            <dt className="text-xs font-bold uppercase tracking-widest text-(--text-mute) mb-1.5">Datum</dt>
+            <dd className="font-semibold text-base">{formatDateRange(event.date_start, event.date_end)}</dd>
           </div>
           <div>
-            <dt className="text-black/50 dark:text-white/50">Lokacija</dt>
-            <dd className="font-medium">
+            <dt className="text-xs font-bold uppercase tracking-widest text-(--text-mute) mb-1.5">Lokacija</dt>
+            <dd className="font-semibold text-base">
               {event.location}, {event.region}
             </dd>
           </div>
           <div>
-            <dt className="text-black/50 dark:text-white/50">Organizator</dt>
-            <dd className="font-medium">{event.organizer}</dd>
+            <dt className="text-xs font-bold uppercase tracking-widest text-(--text-mute) mb-1.5">Organizator</dt>
+            <dd className="font-semibold text-base">{event.organizer}</dd>
           </div>
           {event.website && (
             <div>
-              <dt className="text-black/50 dark:text-white/50">Web stranica</dt>
-              <dd className="font-medium">
-                <a href={event.website} target="_blank" rel="noopener noreferrer" className="underline decoration-1 underline-offset-2">
+              <dt className="text-xs font-bold uppercase tracking-widest text-(--text-mute) mb-1.5">Web stranica</dt>
+              <dd className="font-semibold text-base">
+                <a
+                  href={event.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-(--blue) hover:underline decoration-1 underline-offset-2"
+                >
                   {event.website.replace(/^https?:\/\//, "")}
                 </a>
               </dd>
@@ -80,13 +111,13 @@ export default async function EventPage({ params }: { params: Promise<{ id: stri
         </dl>
 
         {event.description && (
-          <p className="mt-6 text-black/80 dark:text-white/80 leading-relaxed">{event.description}</p>
+          <p className="mt-8 text-(--text-dim) leading-relaxed max-w-2xl">{event.description}</p>
         )}
 
         {event.source && (
-          <p className="mt-8 text-xs text-black/40 dark:text-white/40">
+          <p className="mt-10 text-xs text-(--text-mute)">
             Izvor podataka:{" "}
-            <a href={event.source} target="_blank" rel="noopener noreferrer" className="underline">
+            <a href={event.source} target="_blank" rel="noopener noreferrer" className="underline decoration-1 underline-offset-2">
               {event.source}
             </a>
           </p>

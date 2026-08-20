@@ -39,12 +39,15 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
     );
   }, [events, discipline, region, category, month, query, showPast]);
 
-  const selectClass =
-    "rounded-lg border border-black/10 dark:border-white/15 bg-white dark:bg-black/20 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/30";
+  const fieldClass =
+    "rounded-sm border border-(--border) bg-(--bg-elevated-2) px-3.5 py-2.5 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-(--red)/40";
+
+  const pillBase =
+    "rounded-sm px-4 py-2.5 text-sm font-extrabold uppercase tracking-wide transition border";
 
   return (
     <div>
-      <div className="flex flex-wrap gap-2 mb-4">
+      <div className="flex flex-wrap gap-2 border-b border-(--border) bg-(--bg-elevated) px-4 sm:px-6 py-5 -mx-4 sm:-mx-6">
         {(
           [
             ["all", "Sve"],
@@ -58,10 +61,10 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
               setDiscipline(value);
               setCategory("all");
             }}
-            className={`rounded-full px-4 py-1.5 text-sm font-medium transition ${
+            className={`${pillBase} ${
               discipline === value
-                ? "bg-black text-white dark:bg-white dark:text-black"
-                : "bg-black/5 dark:bg-white/10 text-black/70 dark:text-white/70 hover:bg-black/10 dark:hover:bg-white/15"
+                ? "bg-(--red) border-(--red) text-white"
+                : "border-(--border) text-(--text-dim) hover:border-(--red)/60 hover:text-(--foreground)"
             }`}
           >
             {label}
@@ -69,15 +72,15 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap items-center gap-2.5 bg-(--bg-elevated) px-4 sm:px-6 py-5 -mx-4 sm:-mx-6 border-b border-(--border) mb-6">
         <input
           type="text"
           placeholder="Pretraži utrke, mjesta, klubove…"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className={`${selectClass} w-full sm:w-64`}
+          className={`${fieldClass} w-full sm:w-64 placeholder:text-(--text-mute) placeholder:font-normal`}
         />
-        <select value={region} onChange={(e) => setRegion(e.target.value)} className={selectClass}>
+        <select value={region} onChange={(e) => setRegion(e.target.value)} className={fieldClass}>
           <option value="all">Sve regije</option>
           {regions.map((r) => (
             <option key={r} value={r}>
@@ -85,7 +88,7 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
             </option>
           ))}
         </select>
-        <select value={category} onChange={(e) => setCategory(e.target.value)} className={selectClass}>
+        <select value={category} onChange={(e) => setCategory(e.target.value)} className={fieldClass}>
           <option value="all">Sve kategorije</option>
           {categories.map((c) => (
             <option key={c} value={c}>
@@ -93,7 +96,7 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
             </option>
           ))}
         </select>
-        <select value={month} onChange={(e) => setMonth(e.target.value)} className={selectClass}>
+        <select value={month} onChange={(e) => setMonth(e.target.value)} className={fieldClass}>
           <option value="all">Svi mjeseci</option>
           {CROATIAN_MONTHS.map((m, i) => (
             <option key={m} value={i}>
@@ -101,22 +104,22 @@ export default function EventFilters({ events }: { events: RaceEvent[] }) {
             </option>
           ))}
         </select>
-        <label className="flex items-center gap-2 text-sm px-1 select-none cursor-pointer">
-          <input type="checkbox" checked={showPast} onChange={(e) => setShowPast(e.target.checked)} className="size-4" />
+        <label className="flex items-center gap-2 text-sm font-semibold px-1 select-none cursor-pointer text-(--text-dim)">
+          <input type="checkbox" checked={showPast} onChange={(e) => setShowPast(e.target.checked)} className="size-4 accent-(--red)" />
           Prikaži prošle utrke
         </label>
       </div>
 
-      <p className="text-sm text-black/50 dark:text-white/50 mb-3">
-        {filtered.length} {filtered.length === 1 ? "utrka" : "utrka pronađeno"}
+      <p className="font-display text-base tracking-wide text-(--text-mute) mb-3">
+        <span className="text-(--red) text-lg">{filtered.length}</span> {filtered.length === 1 ? "utrka" : "utrka pronađeno"}
       </p>
 
       <div className="grid gap-3">
-        {filtered.map((event) => (
-          <EventCard key={event.id} event={event} past={!isUpcoming(event)} />
+        {filtered.map((event, i) => (
+          <EventCard key={event.id} event={event} past={!isUpcoming(event)} index={i} />
         ))}
         {filtered.length === 0 && (
-          <p className="text-center text-black/50 dark:text-white/50 py-12">
+          <p className="text-center text-(--text-mute) py-12">
             Nema utrka koje odgovaraju odabranim filterima.
           </p>
         )}
