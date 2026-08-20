@@ -5,6 +5,16 @@ const REPO = "fresh10160-png/race-eventi";
 const MAX_SHORT = 200;
 const MAX_LONG = 2000;
 
+// TEMPORARY diagnostic endpoint — reveals only whether GITHUB_ISSUE_TOKEN is present
+// and its length, never the value. Remove once the env var setup is confirmed working.
+export async function GET() {
+  const token = process.env.GITHUB_ISSUE_TOKEN;
+  return NextResponse.json({
+    tokenConfigured: Boolean(token),
+    tokenLength: token ? token.length : 0,
+  });
+}
+
 type Payload = {
   name: string;
   discipline: string;
